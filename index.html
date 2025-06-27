@@ -1,1 +1,51 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Nome</title>
+</head>
+<body>
+  <h2>Digite seu nome</h2>
+  <input type="text" id="nome" placeholder="Ex: Carlos dos Anjos">
+  <button id="btnSalvar">Salvar</button>
+  <p id="codigoResultado"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA5a-2HzvcljnAfXE7P3ThDnq6m6E568ZA",
+      authDomain: "jogo-60a9e.firebaseapp.com",
+      projectId: "jogo-60a9e",
+      storageBucket: "jogo-60a9e.appspot.com",
+      messagingSenderId: "352852303591",
+      appId: "1:352852303591:web:8083c950047c9026bd8c42",
+      databaseURL: "https://jogo-60a9e-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function gerarCodigo() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    document.getElementById('btnSalvar').addEventListener('click', () => {
+      const nome = document.getElementById('nome').value.trim();
+      if (!nome) return alert("Preencha o nome!");
+
+      const codigo = gerarCodigo();
+
+      set(ref(db, 'usuarios/' + codigo), {
+        nome: nome
+      }).then(() => {
+        document.getElementById('codigoResultado').innerText = `Código gerado: ${codigo}`;
+      }).catch((error) => {
+        alert("Erro ao salvar: " + error);
+      });
+    });
+  </script>
+</body>
+</html>
