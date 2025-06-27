@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta por Código</title>
+</head>
+<body>
+  <h2>Digite o Código</h2>
+  <input type="text" id="codigoBusca" placeholder="Ex: ABC123">
+  <button id="btnBuscar">Buscar</button>
+  <p id="resultadoNome"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA5a-2HzvcljnAfXE7P3ThDnq6m6E568ZA",
+      authDomain: "jogo-60a9e.firebaseapp.com",
+      projectId: "jogo-60a9e",
+      storageBucket: "jogo-60a9e.appspot.com",
+      messagingSenderId: "352852303591",
+      appId: "1:352852303591:web:8083c950047c9026bd8c42",
+      databaseURL: "https://jogo-60a9e-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById('btnBuscar').addEventListener('click', () => {
+      const codigo = document.getElementById('codigoBusca').value.trim().toUpperCase();
+      if (!codigo) return alert("Digite o código!");
+
+      const dbRef = ref(db);
+
+      get(child(dbRef, `usuarios/${codigo}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const dados = snapshot.val();
+          document.getElementById('resultadoNome').innerText = "Nome encontrado: " + dados.nome;
+        } else {
+          document.getElementById('resultadoNome').innerText = "Código não encontrado.";
+        }
+      }).catch((error) => {
+        alert("Erro ao buscar: " + error);
+      });
+    });
+  </script>
+</body>
+</html>
